@@ -1,43 +1,49 @@
 package com.amazon.ecommerce.service;
+
 import com.amazon.ecommerce.entity.Product;
+import com.amazon.ecommerce.repository.ProductRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-        import java.util.concurrent.atomic.AtomicLong;
 
 @Service
 public class ProductService {
+    @Autowired
+    private ProductRepository productRepository;
 
-    private final Map<Long, Product> productMap = new HashMap<>();
-    private final AtomicLong idGenerator = new AtomicLong();
 
     public List<Product> getAllProducts() {
-        return new ArrayList<>(productMap.values());
+        return productRepository.findAll();
     }
 
-    public Optional<Product> getProductById(Long id) {
-        return Optional.ofNullable(productMap.get(id));
+    public Optional<Product> getProductById(String id) {
+        return productRepository.findById(id);
     }
 
     public Product createProduct(Product product) {
-        long id = idGenerator.incrementAndGet();
-        product.setId(id);
-        productMap.put(id, product);
+        productRepository.save(product);
         return product;
     }
 
-    public Optional<Product> updateProduct(Long id, Product productDetails) {
-        Product existingProduct = productMap.get(id);
-        if (existingProduct != null) {
-            existingProduct.setName(productDetails.getName());
-            existingProduct.setDescription(productDetails.getDescription());
-            existingProduct.setPrice(productDetails.getPrice());
-            return Optional.of(existingProduct);
+    public Optional<Product> updateProduct(String id, Product productDetails) {
+        Optional<Product> existingProduct = productRepository.findById(id);
+        if (existingProduct.isPresent()) {
+            existingProduct.get().setName(productDetails.getName());
+            existingProduct.get().setDescription(productDetails.getDescription());
+            existingProduct.get().setPrice(productDetails.getPrice());
+            return Optional.of(productRepository.save(existingProduct.get()));
+
         }
         return Optional.empty();
     }
 
-    public boolean deleteProduct(Long id) {
-        return productMap.remove(id) != null;
+    public boolean deleteProduct(String id) {
+        Optional<Product> existingProduct = productRepository.findById(id);
+        if (existingProduct.isPresent()) {
+            productRepository.deleteById(id);
+            return true;
+        }
+        return false;
     }
 }

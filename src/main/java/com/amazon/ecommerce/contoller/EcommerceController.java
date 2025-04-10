@@ -20,7 +20,7 @@ public class EcommerceController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Product> getProductById(@PathVariable Long id) {
+    public ResponseEntity<Product> getProductById(@PathVariable String id) {
         return productService.getProductById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -33,7 +33,7 @@ public class EcommerceController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Product> updateProduct(
-            @PathVariable Long id,
+            @PathVariable String id,
             @RequestBody Product productDetails) {
         return productService.updateProduct(id, productDetails)
                 .map(ResponseEntity::ok)
@@ -41,7 +41,7 @@ public class EcommerceController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteProduct(@PathVariable String id) {
         if (productService.deleteProduct(id)) {
             return ResponseEntity.noContent().build();
         } else {
