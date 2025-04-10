@@ -1,21 +1,20 @@
 package com.amazon.ecommerce.entity;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection = "products")
+import org.springframework.data.annotation.Id;
+
 public class Product {
     @Id
-    private String id;
+    private Long id;
     private String name;
     private String description;
     private Double price;
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
